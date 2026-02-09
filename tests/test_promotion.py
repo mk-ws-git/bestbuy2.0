@@ -1,7 +1,7 @@
 import pytest
 
-from bestbuy.products import Product, NonStockedProduct, LimitedProduct
-from bestbuy.promotions import PercentDiscount, SecondHalfPrice, ThirdOneFree
+from products import Product, NonStockedProduct, LimitedProduct
+from promotions import PercentDiscount, SecondHalfPrice, ThirdOneFree
 
 
 def test_percent_discount_applies_correctly():

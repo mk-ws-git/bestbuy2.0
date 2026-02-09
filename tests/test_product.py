@@ -1,6 +1,6 @@
 import pytest
 
-from bestbuy.products import Product, NonStockedProduct, LimitedProduct
+from products import Product, NonStockedProduct, LimitedProduct
 
 def test_invalid_product_empty_name_raises_exception():
     with pytest.raises(Exception):
