@@ -47,6 +47,9 @@ class NonStockedProduct(Product):
     def __init__(self, name, price):
         super().__init__(name, price, quantity=0)
 
+    def is_active(self) -> bool:
+        return True
+
     def buy(self, quantity: int) -> float:
         if quantity <= 0:
             raise ValueError("Quantity must be positive")
