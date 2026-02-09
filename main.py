@@ -1,53 +1,6 @@
 import products
 import store
-
-
-def start(best_buy: store.Store):
-    """Run the CLI menu for the given store."""
-    while True:
-        print("\nStore Menu")
-        print("-----------")
-        print("1. List all products in store")
-        print("2. Show total amount in store")
-        print("3. Make an order")
-        print("4. Quit")
-
-        choice = input("Please choose a number: ")
-
-        if choice == "1":
-            all_products = best_buy.get_all_products()
-            for i, product in enumerate(all_products, start=1):
-                print(f"{i}. {product.show()}")
-
-        elif choice == "2":
-            total = best_buy.get_total_quantity()
-            print(f"Total amount in store: {total}")
-
-        elif choice == "3":
-            shopping_list = []
-            all_products = best_buy.get_all_products()
-
-            for i, product in enumerate(all_products, start=1):
-                print(f"{i}. {product.show()}")
-
-            while True:
-                product_number = input("Enter product number to buy (or empty to finish): ")
-                if product_number == "":
-                    break
-
-                quantity = int(input("Enter quantity: "))
-                product = all_products[int(product_number) - 1]
-                shopping_list.append((product, quantity))
-
-            total_price = best_buy.order(shopping_list)
-            print(f"Order cost: {total_price} dollars.")
-
-        elif choice == "4":
-            print("Goodbye!")
-            break
-
-        else:
-            print("Invalid choice, please try again.")
+import promotions
 
 def main():
     product_list = [
@@ -57,6 +10,14 @@ def main():
         products.NonStockedProduct("Windows License", price=125),
         products.LimitedProduct("Shipping", price=10, quantity=250, maximum=1),
     ]
+
+    second_half_price = promotions.SecondHalfPrice("Second Half price!")
+    third_one_free = promotions.ThirdOneFree("Third One Free!")
+    thirty_percent = promotions.PercentDiscount("30% off!", percent=30)
+
+    product_list[0].set_promotion(second_half_price)
+    product_list[1].set_promotion(third_one_free)
+    product_list[3].set_promotion(thirty_percent)
 
     best_buy = store.Store(product_list)
     best_buy.start()

@@ -1,5 +1,6 @@
 class Product:
     """Represents a product in the store inventory."""
+
     def __init__(self, name, price, quantity):
         """Create a product with name, price, quantity; set active=True; validate inputs."""
         if not name:
@@ -14,14 +15,14 @@ class Product:
         self.quantity = quantity
         self.active = True
 
-        def get_promotion(self):
-            return self.promotion
-
-        def set_promotion(self, promotion) -> None:
-          self.promotion = promotion
-
+        # Promotions (default: none)
         self.promotion = None
 
+    def get_promotion(self):
+        return self.promotion
+
+    def set_promotion(self, promotion) -> None:
+        self.promotion = promotion
 
     def get_quantity(self) -> int:
         """Return current product quantity."""
