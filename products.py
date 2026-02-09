@@ -39,3 +39,39 @@ class Product:
     def show(self) -> str:
         """Return a string representation of the product."""
         return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}"
+
+
+class NonStockedProduct(Product):
+    """Represents a non-stocked product (e.g., software license)."""
+
+    def __init__(self, name, price):
+        super().__init__(name, price, quantity=0)
+
+    def buy(self, quantity: int) -> float:
+        if quantity <= 0:
+            raise ValueError("Quantity must be positive")
+        return self.price * quantity
+
+    def show(self) -> str:
+        return f"{self.name} (Non-stocked), Price: {self.price}"
+
+
+class LimitedProduct(Product):
+    """Represents a product with a maximum purchase limit per order."""
+
+    def __init__(self, name, price, quantity, maximum):
+        if maximum <= 0:
+            raise ValueError("Maximum must be positive")
+        super().__init__(name, price, quantity)
+        self.maximum = maximum
+
+    def buy(self, quantity: int) -> float:
+        if quantity > self.maximum:
+            raise ValueError("Exceeded maximum allowed per order")
+        return super().buy(quantity)
+
+    def show(self) -> str:
+        return (
+            f"{self.name} (Limited to {self.maximum} per order), "
+            f"Price: {self.price}, Quantity: {self.quantity}"
+        )
