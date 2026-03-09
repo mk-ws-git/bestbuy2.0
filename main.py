@@ -2,7 +2,7 @@ import products
 import store
 import promotions
 
-def main():
+def create_store():
     product_list = [
         products.Product("MacBook Air M2", price=1450, quantity=100),
         products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
@@ -22,69 +22,83 @@ def main():
     return store.Store(product_list)
 
 
+def print_menu():
+    print("\nStore Menu")
+    print("1. List all products")
+    print("2. Show total quantity in store")
+    print("3. Make an order")
+    print("4. Quit")
+
+
+def list_products(best_buy):
+    product_list = best_buy.get_all_products()
+    if not product_list:
+        print("No products in store.")
+        return []
+
+    for index, product in enumerate(product_list, start=1):
+        print(f"{index}. {product.show()}")
+    return product_list
+
+
+def show_total_quantity(best_buy):
+    print(f"Total quantity in store: {best_buy.get_total_quantity()}")
+
+
+def collect_shopping_list(product_list):
+    shopping_list = []
+
+    while True:
+        item = input("Enter product number (or 'done'): ").strip().lower()
+        if item == "done":
+            break
+
+        if not item.isdigit() or not (1 <= int(item) <= len(product_list)):
+            print("Invalid product number.")
+            continue
+
+        qty = input("Enter quantity: ").strip()
+        if not qty.isdigit() or int(qty) <= 0:
+            print("Invalid quantity.")
+            continue
+
+        selected_product = product_list[int(item) - 1]
+        shopping_list.append((selected_product, int(qty)))
+
+    return shopping_list
+
+
+def make_order(best_buy):
+    product_list = list_products(best_buy)
+    if not product_list:
+        return
+
+    shopping_list = collect_shopping_list(product_list)
+    if not shopping_list:
+        print("No items ordered.")
+        return
+
+    try:
+        total = best_buy.order(shopping_list)
+        print(f"Order placed. Total cost: {total}")
+    except Exception as error:
+        print(f"Order failed: {error}")
+
 def start(best_buy):
     """Start a simple CLI for the store."""
     while True:
-        print("\nStore Menu")
-        print("1. List all products")
-        print("2. Show total quantity in store")
-        print("3. Make an order")
-        print("4. Quit")
-
-        choice = input("Choose an option: ").strip()
+        print_menu()
+        choice = input("\nChoose an option: ").strip()
 
         if choice == "1":
-            product_list = best_buy.get_all_products()
-            if not product_list:
-                print("No products in store.")
-                continue
-            for i, p in enumerate(product_list, start=1):
-                print(f"{i}. {p.show()}")
-
+            list_products(best_buy)
         elif choice == "2":
-            print(f"Total quantity in store: {best_buy.get_total_quantity()}")
-
+            show_total_quantity(best_buy)
         elif choice == "3":
-            product_list = best_buy.get_all_products()
-            if not product_list:
-                print("No products in store.")
-                continue
-
-            for i, p in enumerate(product_list, start=1):
-                print(f"{i}. {p.show()}")
-
-            shopping_list = []
-            while True:
-                item = input("Enter product number (or 'done'): ").strip().lower()
-                if item == "done":
-                    break
-
-                if not item.isdigit() or not (1 <= int(item) <= len(product_list)):
-                    print("Invalid product number.")
-                    continue
-
-                qty = input("Enter quantity: ").strip()
-                if not qty.isdigit() or int(qty) <= 0:
-                    print("Invalid quantity.")
-                    continue
-
-                product = product_list[int(item) - 1]
-                shopping_list.append((product, int(qty)))
-
-            if not shopping_list:
-                print("No items ordered.")
-                continue
-
-            try:
-                total = best_buy.order(shopping_list)
-                print(f"Order placed. Total cost: {total}")
-            except Exception as e:
-                print(f"Order failed: {e}")
-
+            make_order(best_buy)
         elif choice == "4":
             print("Goodbye.")
             return
-
         else:
             print("Invalid choice.")
 
