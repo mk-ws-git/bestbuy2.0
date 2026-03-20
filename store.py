@@ -42,9 +42,9 @@ class Store:
                 if total_quantity > product.get_quantity():
                     raise ValueError("Not enough stock")
 
-                # Apply purchase once per product after validating all quantities
-            total_price = 0.0
-            for product, total_quantity in aggregated_quantities.items():
-                total_price += product.buy(total_quantity)
+        # Apply purchase once per product after validating all quantities
+        total_price = 0.0
+        for product, total_quantity in aggregated_quantities.items():
+            total_price += product.buy(total_quantity)
 
-            return total_price
+        return total_price
