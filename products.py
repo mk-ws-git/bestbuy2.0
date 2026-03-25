@@ -2,7 +2,7 @@ class Product:
     """Represents a product in the store inventory."""
 
     def __init__(self, name, price, quantity):
-        """Create a product with name, price, quantity; set active=True; validate inputs."""
+        """Create a product and validate its inputs."""
         if not name:
             raise ValueError("Product name cannot be empty")
         if price < 0:
@@ -13,7 +13,7 @@ class Product:
         self.name = name
         self.price = price
         self.quantity = quantity
-        self.active = True
+        self.active = self.quantity > 0
 
         # Promotions (default: none)
         self.promotion = None
@@ -29,21 +29,23 @@ class Product:
         return self.quantity
 
     def set_quantity(self, quantity: int) -> None:
-        """Set the product quantity; reactivate if quantity > 0."""
+        """Set the product quantity; deactivate if quantity reaches 0."""
         self.quantity = quantity
+        self.active = self.quantity > 0
 
     def is_active(self) -> bool:
         """Return whether the product is active (in stock)."""
         return self.quantity > 0
 
     def buy(self, quantity: int) -> float:
-        """Buy quantity units and return total price; decrease stock; deactivate if stock hits 0."""
+        """Buy units, update stock, and return the total price."""
         if quantity <= 0:
             raise ValueError("Quantity must be positive")
         if quantity > self.quantity:
             raise ValueError("Not enough stock")
 
         self.quantity -= quantity
+        self.active = self.quantity > 0
 
         if self.promotion:
             return self.promotion.apply_promotion(self, quantity)
@@ -51,8 +53,13 @@ class Product:
         return self.price * quantity
 
     def show(self) -> str:
-        promo_str = f", Promotion: {self.promotion.name}" if self.promotion else ""
-        return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}{promo_str}"
+        promo_str = (
+            f", Promotion: {self.promotion.name}" if self.promotion else ""
+        )
+        return (
+            f"{self.name}, Price: {self.price}, Quantity: "
+            f"{self.quantity}{promo_str}"
+        )
 
 
 class NonStockedProduct(Product):
@@ -74,7 +81,11 @@ class NonStockedProduct(Product):
         return self.price * quantity
 
     def show(self) -> str:
-        promo_str = f", Promotion: {self.promotion.name}" if getattr(self, "promotion", None) else ""
+        promo_str = (
+            f", Promotion: {self.promotion.name}"
+            if getattr(self, "promotion", None)
+            else ""
+        )
         return f"{self.name} (Non-stocked), Price: {self.price}{promo_str}"
 
 

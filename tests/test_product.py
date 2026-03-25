@@ -1,6 +1,7 @@
 import pytest
 
-from products import Product, NonStockedProduct, LimitedProduct
+from products import LimitedProduct, NonStockedProduct, Product
+
 
 def test_invalid_product_empty_name_raises_exception():
     with pytest.raises(Exception):
@@ -56,6 +57,18 @@ def test_non_stocked_product_buy_does_not_change_quantity_and_returns_total():
     assert total == 375
     assert p.get_quantity() == 0
     assert p.is_active() is True
+
+
+def test_non_stocked_product_can_be_ordered_through_store():
+    from store import Store
+
+    product = NonStockedProduct("Windows License", price=125)
+    best_buy = Store([product])
+
+    total = best_buy.order([(product, 2)])
+
+    assert total == 250
+    assert product.get_quantity() == 0
 
 
 def test_limited_product_cannot_be_bought_above_maximum():

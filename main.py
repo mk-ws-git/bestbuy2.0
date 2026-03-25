@@ -1,6 +1,7 @@
 import products
-import store
 import promotions
+import store
+
 
 def create_store():
     product_list = [
@@ -83,6 +84,7 @@ def make_order(best_buy):
         print(f"Order placed. Total cost: {total}")
     except Exception as error:
         print(f"Order failed: {error}")
+
 
 def start(best_buy):
     """Start a simple CLI for the store."""

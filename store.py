@@ -1,6 +1,7 @@
 from collections import defaultdict
 from typing import List, Tuple
-from products import Product, LimitedProduct
+from products import LimitedProduct, NonStockedProduct, Product
+
 
 class Store:
     """Represents a store holding a list of products and supporting orders."""
@@ -36,15 +37,20 @@ class Store:
                 raise ValueError("Quantity must be positive")
             aggregated_quantities[product] += quantity
 
-            for product, total_quantity in aggregated_quantities.items():
-                if isinstance(product, LimitedProduct) and total_quantity > product.maximum:
-                    raise ValueError("Exceeded maximum allowed per order")
-                if total_quantity > product.get_quantity():
-                    raise ValueError("Not enough stock")
+        for product, total_quantity in aggregated_quantities.items():
+            if (
+                isinstance(product, LimitedProduct)
+                and total_quantity > product.maximum
+            ):
+                raise ValueError("Exceeded maximum allowed per order")
+            if (
+                not isinstance(product, NonStockedProduct)
+                and total_quantity > product.get_quantity()
+            ):
+                raise ValueError("Not enough stock")
 
-                # Apply purchase once per product after validating all quantities
-            total_price = 0.0
-            for product, total_quantity in aggregated_quantities.items():
-                total_price += product.buy(total_quantity)
+        total_price = 0.0
+        for product, total_quantity in aggregated_quantities.items():
+            total_price += product.buy(total_quantity)
 
-            return total_price
+        return total_price

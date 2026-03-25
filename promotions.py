@@ -9,7 +9,7 @@ class Promotion(ABC):
 
     @abstractmethod
     def apply_promotion(self, product, quantity: int) -> float:
-        """Return total price after applying promotion to `quantity` of `product`."""
+        """Return total price after applying a promotion."""
         raise NotImplementedError
 
 
